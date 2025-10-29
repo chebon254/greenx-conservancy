@@ -6,41 +6,43 @@
 	if (empty($_POST["fname"])) {
 		$errorMSG = "First Name is required. ";
 	} else {
-		$fname = $_POST["fname"];
+		$fname = filter_var($_POST["fname"], FILTER_SANITIZE_STRING);
 	}
 
 	// LASTNAME
 	if (empty($_POST["lname"])) {
 		$errorMSG = "Last Name is required. ";
 	} else {
-		$lname = $_POST["lname"];
+		$lname = filter_var($_POST["lname"], FILTER_SANITIZE_STRING);
 	}
 
 	// EMAIL
 	if (empty($_POST["email"])) {
 		$errorMSG .= "Email is required. ";
 	} else {
-		$email = $_POST["email"];
+		$email = filter_var($_POST["email"], FILTER_SANITIZE_EMAIL);
+		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+			$errorMSG .= "Invalid email format. ";
+		}
 	}
 
 	// PHONE
 	if (empty($_POST["phone"])) {
 		$errorMSG .= "Phone is required. ";
 	} else {
-		$phone = $_POST["phone"];
+		$phone = filter_var($_POST["phone"], FILTER_SANITIZE_STRING);
 	}
 
 	// MESSAGE
 	if (empty($_POST["message"])) {
 		$errorMSG .= "Message is required. ";
 	} else {
-		$message = $_POST["message"];
+		$message = filter_var($_POST["message"], FILTER_SANITIZE_STRING);
 	}
 
 	$subject = 'Contact Inquiry from Website';
 
-	//$EmailTo = "info@yourdomain.com"; // Replace with your email.
-    $EmailTo = "awaikentechnology@gmail.com";
+	$EmailTo = "maryokeloconservancy@gmail.com";
     
 	// prepare email body text
 	$Body = "";
@@ -60,8 +62,13 @@
 	$Body .= $message;
 	$Body .= "\n";
 
-	// send email
-	$success = @mail($EmailTo, $subject, $Body, "From:".$email);
+	// send email with proper headers
+	$headers = "From: " . $email . "\r\n";
+	$headers .= "Reply-To: " . $email . "\r\n";
+	$headers .= "X-Mailer: PHP/" . phpversion() . "\r\n";
+	$headers .= "Content-Type: text/plain; charset=UTF-8\r\n";
+
+	$success = @mail($EmailTo, $subject, $Body, $headers);
 
 	// redirect to success page
 	if ($success && $errorMSG == ""){
