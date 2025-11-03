@@ -42,7 +42,7 @@
 
 	$subject = 'Contact Inquiry from Website';
 
-	$EmailTo = "maryokeloconservancy@gmail.com";
+	$EmailTo = "kelvinchebon90@gmail.com";
     
 	// prepare email body text
 	$Body = "";
